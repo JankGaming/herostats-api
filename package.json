@@ -1,0 +1,13 @@
+{
+  "name": "herostats-api",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node hsapi.js"
+  },
+  "dependencies": {
+    "express": "~4.9.0",
+    "body-parser": "~1.8.1",
+    "mysql": "~2.5.2"
+  }
+}
