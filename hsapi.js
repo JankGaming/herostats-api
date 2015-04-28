@@ -22,6 +22,21 @@ var patchName = config.patchName;
 
 var app = express();
 
+var patchList = [
+  '6.77',
+  '6.78',
+  '6.78c',
+  '6.79',
+  '6.80',
+  '6.81',
+  '6.81b',
+  '6.82',
+  '6.83',
+  '6.83b',
+  '6.83c',
+  '6.84'
+];
+
 /*******************************************************************************
  * BEGIN ROUTING
  ******************************************************************************/
@@ -30,11 +45,13 @@ app.get('/', function(req, res) {
   var welcomeMsg = "<!DOCTYPE html>"
   + "<div style='font-family: \"Courier New\"'>"
   + "Welcome to the JankDota Hero Stats API!<br />"
-  + "Currently serving stats for patch " + patchName + "<br />"
-  + "To get JSON of all hero/ID pairs, query http://api.herostats.io/heroes<br />"
-  + "To get the JSON for a single hero, query http://api.herostats.io/heroes/<strong>heroname</strong><br />"
-  + "Alternatively, you can query with the JankDota HeroID with http://api.herostats.io/heroes/<strong>heroID</strong><br />"
+  + "Currently serving stats for patch <strong>" + patchName + "</strong><br /><br />"
+  + "To get JSON of all hero/ID pairs, query http://api.herostats.io/heroes<br /><br />"
+  + "To get the JSON for a single hero, query http://api.herostats.io/heroes/<strong>heroname</strong><br /><br />"
+  + "Alternatively, you can query with the JankDota HeroID with http://api.herostats.io/heroes/<strong>heroID</strong><br /><br />"
   + "<strong>To get ALL hero data in one query</strong>, use http://api.herostats.io/heroes/all<br /><br />"
+  + "<strong>To get ALL hero data for a given patch</strong>, use http://api.herostats.io/patch/<strong>patch number</strong><br />"
+  + "<em>Giving an incorrect patch number will return a list of valid patch numbers. HeroStats supports patches back to 6.77.</em><br /><br />"
   + "This API is here to help you easily access Dota 2 hero properties. If you are implementing the API, please use intelligent code "
   + "for getting the hero data as to not destroy the server with requests! Besides that, this data is free and open to use by anyone.<br /><br />"
   + "See <a target=\"_blank\" href=\"http://jankdota.com/herostats\">jankdota.com/herostats</a> for our in-depth display of all hero property data."
@@ -106,6 +123,21 @@ app.get('/heroes/:hero', function(req, res) {
   }
 });
 
+app.get('/patch/:patchNumber', function(req, res) {
+  var requestedPatch = req.params.patchNumber;
+
+  if (patchList.indexOf(requestedPatch) === -1) {
+    res.json({
+      error: 'Invalid patch number',
+      validPatches: patchList
+    });
+    return;
+  }
+
+   var patchLabel = requestedPatch.replace('.', '');
+   returnAll(req, res, 'HeroStats_' + patchLabel); 
+});
+
 // Return the list of hero/id pairings.
 app.get('/heroes', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -147,19 +179,25 @@ app.get("*", function(req, res) {
  * BEGIN HELPER FUNCTIONS
  ******************************************************************************/
 
-function returnAll(req, res) {
+function returnAll(req, res, tableOverride) {
+  
+  var useTable = table;
+
+  if (typeof tableOverride !== 'undefined') {
+    useTable = tableOverride;
+  }
 
   // Query the database
-  connection.query("SELECT * FROM `" + table + "` WHERE 1 ORDER BY ID ASC",
+  connection.query("SELECT * FROM `" + useTable + "` WHERE 1 ORDER BY ID ASC",
     function(err, rows, fields) {
 
       // Throw the error if there is one.
       if (err) {
         console.log(err);
-        console.log("FAILED TO FILL REQUEST - ALL HEROES");
+        console.log("FAILED TO FILL REQUEST - ALL HEROES - " + useTable);
         res.json({error: "Internal error."});
       } else if(rows.length > 0) {
-        console.log("SUCCESSFULLY FILLED REQUEST - ALL HEROES");
+        console.log("SUCCESSFULLY FILLED REQUEST - ALL HEROES - " + useTable);
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
