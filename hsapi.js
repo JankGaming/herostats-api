@@ -38,6 +38,16 @@ var patchList = [
   '6.84b'
 ];
 
+function tsLog(message) {
+  var time = new Date().toString();
+  console.log(time, message);
+}
+
+function tsErr(message) {
+  var time = new Date().toString();
+  console.error(time, message);
+}
+
 /*******************************************************************************
  * BEGIN ROUTING
  ******************************************************************************/
@@ -59,7 +69,7 @@ app.get('/', function(req, res) {
   + "</div>";
   res.send(welcomeMsg);
   res.end();
-  console.info("SERVED - Homepage");
+  tsLog("SERVED - Homepage");
   return;
 });
 
@@ -86,15 +96,15 @@ app.get('/heroes/:hero', function(req, res) {
 
       // Throw the error if there is one.
       if (err) {
-        console.error(err);
-        console.error("FAILED TO FILL REQUEST: hero - " + hero);
+        tsErr(err);
+        tsErr("FAILED TO FILL REQUEST: hero - " + hero);
         res.json({error: "Internal error."});
       } else if(rows.length > 0) {
-        console.info("SUCCESSFULLY FILLED REQUEST: hero - " + hero);
+        tsLog("SUCCESSFULLY FILLED REQUEST: hero - " + hero);
         var respondObj = {};
         res.json(rows[0]);
       } else {
-        console.info("EMPTY RESPONSE - " + hero);
+        tsLog("EMPTY RESPONSE - " + hero);
         res.json({error: "Hero not found."});
       }
     });
@@ -108,15 +118,15 @@ app.get('/heroes/:hero', function(req, res) {
 
       // Throw the error if there is one.
       if (err) {
-        console.error(err);
-        console.error("FAILED TO FILL REQUEST - hero - " + hero);
+        tsErr(err);
+        tsErr("FAILED TO FILL REQUEST - hero - " + hero);
         res.json({error: "Internal error."});
       } else if(rows.length > 0) {
-        console.info("SUCCESSFULLY FILLED REQUEST - hero - " + hero);
+        tsLog("SUCCESSFULLY FILLED REQUEST - hero - " + hero);
         var respondObj = {};
         res.json(rows[0]);
       } else {
-        console.info("EMPTY RESPONSE - " + hero);
+        tsLog("EMPTY RESPONSE - " + hero);
         res.json({error: "Hero not found."});
       }
     });
@@ -136,7 +146,7 @@ app.get('/patch/:patchNumber', function(req, res) {
   }
 
    var patchLabel = requestedPatch.replace('.', '');
-   returnAll(req, res, 'HeroStats_' + patchLabel); 
+   returnAll(req, res, 'HeroStats_' + patchLabel);
 });
 
 // Return the list of hero/id pairings.
@@ -149,11 +159,11 @@ app.get('/heroes', function(req, res) {
 
       // Throw the error if there is one.
       if (err) {
-        console.error(err);
-        console.error("FAILED TO FILL REQUEST - HERO LIST");
+        tsErr(err);
+        tsErr("FAILED TO FILL REQUEST - HERO LIST");
         res.json({error: "Internal error."});
       } else if(rows.length > 0) {
-        console.info("SUCCESSFULLY FILLED REQUEST - HERO LIST");
+        tsLog("SUCCESSFULLY FILLED REQUEST - HERO LIST");
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
@@ -164,7 +174,7 @@ app.get('/heroes', function(req, res) {
 
         res.json(respondObj);
       } else {
-        console.info("EMPTY RESPONSE - HERO LIST");
+        tsLog("EMPTY RESPONSE - HERO LIST");
         res.json({error: "No response from database."});
       }
     });
@@ -181,7 +191,7 @@ app.get("*", function(req, res) {
  ******************************************************************************/
 
 function returnAll(req, res, tableOverride) {
-  
+
   var useTable = table;
 
   if (typeof tableOverride !== 'undefined') {
@@ -194,11 +204,11 @@ function returnAll(req, res, tableOverride) {
 
       // Throw the error if there is one.
       if (err) {
-        console.log(err);
-        console.log("FAILED TO FILL REQUEST - ALL HEROES - " + useTable);
+        tsLog(err);
+        tsLog("FAILED TO FILL REQUEST - ALL HEROES - " + useTable);
         res.json({error: "Internal error."});
       } else if(rows.length > 0) {
-        console.log("SUCCESSFULLY FILLED REQUEST - ALL HEROES - " + useTable);
+        tsLog("SUCCESSFULLY FILLED REQUEST - ALL HEROES - " + useTable);
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
@@ -207,7 +217,7 @@ function returnAll(req, res, tableOverride) {
 
         res.json(respondObj);
       } else {
-        console.log("EMPTY RESPONSE -  ALL HEROES");
+        tsLog("EMPTY RESPONSE -  ALL HEROES");
         res.json({error: "No response from database."});
       }
     });
@@ -225,7 +235,7 @@ function handleDisconnect(connection) {
       throw err;
     }
 
-    console.log('Re-connecting to database.');
+    tsLog('Re-connecting to database.');
 
     connection = mysql.createConnection(connection.config);
     connection.connect();
@@ -247,7 +257,7 @@ function keepAlive() {
 app.set('port', config.port || 322);
 
 var server = app.listen(app.get('port'), function() {
-  console.log('Herostats now running on port ' + server.address().port);
+  tsLog('Herostats now running on port ' + server.address().port);
 });
 
 module.exports = app;
