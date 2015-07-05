@@ -1,7 +1,24 @@
 {
   "name": "herostats-api",
-  "version": "1.1.0",
-  "private": true,
+  "version": "1.1.1",
+  "description": "API server for the HeroStats.io API by JankDota",
+  "homepage": "http://api.herostats.io",
+  "bugs": {
+    "url": "https://github.com/JankGaming/herostats-api/issues",
+    "email": "twisterghost@gmail.com"
+  },
+  "author": {
+    "name": "Michael Barrett",
+    "email": "twisterghost@gmail.com",
+    "url": "http://hellote.com"
+  },
+  "main": "hsapi.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JankGaming/herostats-api.git"
+  },
+  "license": "MIT",
+  "private": false,
   "scripts": {
     "start": "node hsapi.js"
   },
