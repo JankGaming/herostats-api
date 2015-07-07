@@ -35,17 +35,17 @@ module.exports = function(app) {
   app.get('/heroes/:hero', singleHero);
   app.get('/patch/:patchNumber', patchData);
   app.get('/heroes', heroList);
-}
+};
 
 // Return data from the given hero.
 var singleHero = function(req, res) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
 
   // Get the user ID from the request.
   var hero = req.params.hero;
 
   // Alias 'all' to be the list of all heroes.
-  if (hero == "all") {
+  if (hero === 'all') {
     returnAll(req, res);
     return;
   }
@@ -54,44 +54,42 @@ var singleHero = function(req, res) {
   if (hero % 1 === 0) {
 
     // Query the database for the given hero ID.
-    connection.query("SELECT * FROM `" + table + "` WHERE ID = ? ORDER BY ID DESC LIMIT 1",
+    connection.query('SELECT * FROM `' + table + '` WHERE ID = ? ORDER BY ID DESC LIMIT 1',
     [hero],
-    function(err, rows, fields) {
+    function(err, rows) {
 
       // Throw the error if there is one.
       if (err) {
         tsErr(err);
-        tsErr("FAILED TO FILL REQUEST: hero - " + hero);
-        res.json({error: "Internal error."});
+        tsErr('FAILED TO FILL REQUEST: hero - ' + hero);
+        res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog("SUCCESSFULLY FILLED REQUEST: hero - " + hero);
-        var respondObj = {};
+        tsLog('SUCCESSFULLY FILLED REQUEST: hero - ' + hero);
         res.json(rows[0]);
       } else {
-        tsLog("EMPTY RESPONSE - " + hero);
-        res.json({error: "Hero not found."});
+        tsLog('EMPTY RESPONSE - ' + hero);
+        res.json({error: 'Hero not found.'});
       }
     });
 
   } else {
 
   // Query the database for the given hero name.
-  connection.query("SELECT * FROM `" + table + "` WHERE Name = ? ORDER BY ID DESC LIMIT 1",
+  connection.query('SELECT * FROM `' + table + '` WHERE Name = ? ORDER BY ID DESC LIMIT 1',
     [hero],
-    function(err, rows, fields) {
+    function(err, rows) {
 
       // Throw the error if there is one.
       if (err) {
         tsErr(err);
-        tsErr("FAILED TO FILL REQUEST - hero - " + hero);
-        res.json({error: "Internal error."});
+        tsErr('FAILED TO FILL REQUEST - hero - ' + hero);
+        res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog("SUCCESSFULLY FILLED REQUEST - hero - " + hero);
-        var respondObj = {};
+        tsLog('SUCCESSFULLY FILLED REQUEST - hero - ' + hero);
         res.json(rows[0]);
       } else {
-        tsLog("EMPTY RESPONSE - " + hero);
-        res.json({error: "Hero not found."});
+        tsLog('EMPTY RESPONSE - ' + hero);
+        res.json({error: 'Hero not found.'});
       }
     });
 
@@ -115,19 +113,19 @@ var patchData = function(req, res) {
 
 // Return the list of hero/id pairings.
 var heroList = function(req, res) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
 
   // Query the database
-  connection.query("SELECT ID, Name FROM `" + table + "` WHERE 1 ORDER BY ID ASC",
-    function(err, rows, fields) {
+  connection.query('SELECT ID, Name FROM `' + table + '` WHERE 1 ORDER BY ID ASC',
+    function(err, rows) {
 
       // Throw the error if there is one.
       if (err) {
         tsErr(err);
-        tsErr("FAILED TO FILL REQUEST - HERO LIST");
-        res.json({error: "Internal error."});
+        tsErr('FAILED TO FILL REQUEST - HERO LIST');
+        res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog("SUCCESSFULLY FILLED REQUEST - HERO LIST");
+        tsLog('SUCCESSFULLY FILLED REQUEST - HERO LIST');
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
@@ -138,8 +136,8 @@ var heroList = function(req, res) {
 
         res.json(respondObj);
       } else {
-        tsLog("EMPTY RESPONSE - HERO LIST");
-        res.json({error: "No response from database."});
+        tsLog('EMPTY RESPONSE - HERO LIST');
+        res.json({error: 'No response from database.'});
       }
     });
 };
@@ -157,16 +155,16 @@ function returnAll(req, res, tableOverride) {
   }
 
   // Query the database
-  connection.query("SELECT * FROM `" + useTable + "` WHERE 1 ORDER BY ID ASC",
-    function(err, rows, fields) {
+  connection.query('SELECT * FROM `' + useTable + '` WHERE 1 ORDER BY ID ASC',
+    function(err, rows) {
 
       // Throw the error if there is one.
       if (err) {
         tsLog(err);
-        tsLog("FAILED TO FILL REQUEST - ALL HEROES - " + useTable);
-        res.json({error: "Internal error."});
+        tsLog('FAILED TO FILL REQUEST - ALL HEROES - ' + useTable);
+        res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog("SUCCESSFULLY FILLED REQUEST - ALL HEROES - " + useTable);
+        tsLog('SUCCESSFULLY FILLED REQUEST - ALL HEROES - ' + useTable);
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
@@ -175,8 +173,8 @@ function returnAll(req, res, tableOverride) {
 
         res.json(respondObj);
       } else {
-        tsLog("EMPTY RESPONSE -  ALL HEROES");
-        res.json({error: "No response from database."});
+        tsLog('EMPTY RESPONSE -  ALL HEROES');
+        res.json({error: 'No response from database.'});
       }
     });
 }
