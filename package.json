@@ -20,7 +20,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "node hsapi.js"
+    "start": "node hsapi.js",
+    "ci": "grunt jshint"
   },
   "dependencies": {
     "express": "~4.9.0",
