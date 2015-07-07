@@ -15,7 +15,8 @@ var patchList = [
   '6.83b',
   '6.83c',
   '6.84',
-  '6.84b'
+  '6.84b',
+  '6.84c'
 ];
 
 function tsLog(message) {
