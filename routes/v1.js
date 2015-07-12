@@ -2,22 +2,7 @@ var connection;
 var table;
 var patchName;
 
-var patchList = [
-  '6.77',
-  '6.78',
-  '6.78c',
-  '6.79',
-  '6.80',
-  '6.81',
-  '6.81b',
-  '6.82',
-  '6.83',
-  '6.83b',
-  '6.83c',
-  '6.84',
-  '6.84b',
-  '6.84c'
-];
+var patchList = require('../data/patches.json');
 
 function tsLog(message) {
   var time = new Date().toString();
