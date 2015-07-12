@@ -1,38 +1,12 @@
-var connection;
-var table;
-var patchName;
+var connection = require('../lib/mysqlConnector');
+var config = require('../config.json');
+var table = config.mysqlTable;
 
-var patchList = [
-  '6.77',
-  '6.78',
-  '6.78c',
-  '6.79',
-  '6.80',
-  '6.81',
-  '6.81b',
-  '6.82',
-  '6.83',
-  '6.83b',
-  '6.83c',
-  '6.84',
-  '6.84b',
-  '6.84c'
-];
-
-function tsLog(message) {
-  var time = new Date().toString();
-  console.log(time, message);
-}
-
-function tsErr(message) {
-  var time = new Date().toString();
-  console.error(time, message);
-}
+var patchList = require('../data/patches.json');
+var logger = require('graceful-logger');
+logger.format('medium');
 
 module.exports = function(app) {
-  connection = app.get('connection');
-  table = app.get('table');
-  patchName = app.get('patchName');
   app.get('/heroes/:hero', singleHero);
   app.get('/patch/:patchNumber', patchData);
   app.get('/heroes', heroList);
@@ -61,14 +35,14 @@ var singleHero = function(req, res) {
 
       // Throw the error if there is one.
       if (err) {
-        tsErr(err);
-        tsErr('FAILED TO FILL REQUEST: hero - ' + hero);
+        logger.err(err);
+        logger.err('FAILED TO FILL REQUEST: hero - ' + hero);
         res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog('SUCCESSFULLY FILLED REQUEST: hero - ' + hero);
+        logger.info('SUCCESSFULLY FILLED REQUEST: hero - ' + hero);
         res.json(rows[0]);
       } else {
-        tsLog('EMPTY RESPONSE - ' + hero);
+        logger.info('EMPTY RESPONSE - ' + hero);
         res.json({error: 'Hero not found.'});
       }
     });
@@ -82,14 +56,14 @@ var singleHero = function(req, res) {
 
       // Throw the error if there is one.
       if (err) {
-        tsErr(err);
-        tsErr('FAILED TO FILL REQUEST - hero - ' + hero);
+        logger.err(err);
+        logger.err('FAILED TO FILL REQUEST - hero - ' + hero);
         res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog('SUCCESSFULLY FILLED REQUEST - hero - ' + hero);
+        logger.info('SUCCESSFULLY FILLED REQUEST - hero - ' + hero);
         res.json(rows[0]);
       } else {
-        tsLog('EMPTY RESPONSE - ' + hero);
+        logger.info('EMPTY RESPONSE - ' + hero);
         res.json({error: 'Hero not found.'});
       }
     });
@@ -122,11 +96,11 @@ var heroList = function(req, res) {
 
       // Throw the error if there is one.
       if (err) {
-        tsErr(err);
-        tsErr('FAILED TO FILL REQUEST - HERO LIST');
+        logger.err(err);
+        logger.err('FAILED TO FILL REQUEST - HERO LIST');
         res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog('SUCCESSFULLY FILLED REQUEST - HERO LIST');
+        logger.info('SUCCESSFULLY FILLED REQUEST - HERO LIST');
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
@@ -137,7 +111,7 @@ var heroList = function(req, res) {
 
         res.json(respondObj);
       } else {
-        tsLog('EMPTY RESPONSE - HERO LIST');
+        logger.info('EMPTY RESPONSE - HERO LIST');
         res.json({error: 'No response from database.'});
       }
     });
@@ -161,11 +135,11 @@ function returnAll(req, res, tableOverride) {
 
       // Throw the error if there is one.
       if (err) {
-        tsLog(err);
-        tsLog('FAILED TO FILL REQUEST - ALL HEROES - ' + useTable);
+        logger.info(err);
+        logger.info('FAILED TO FILL REQUEST - ALL HEROES - ' + useTable);
         res.json({error: 'Internal error.'});
       } else if(rows.length > 0) {
-        tsLog('SUCCESSFULLY FILLED REQUEST - ALL HEROES - ' + useTable);
+        logger.info('SUCCESSFULLY FILLED REQUEST - ALL HEROES - ' + useTable);
         var respondObj = {};
 
         for (var i = 0; i < rows.length; i++) {
@@ -174,7 +148,7 @@ function returnAll(req, res, tableOverride) {
 
         res.json(respondObj);
       } else {
-        tsLog('EMPTY RESPONSE -  ALL HEROES');
+        logger.info('EMPTY RESPONSE -  ALL HEROES');
         res.json({error: 'No response from database.'});
       }
     });
