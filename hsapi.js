@@ -1,6 +1,8 @@
 var express = require('express');
 var mysql = require('mysql');
 var config = require('./config.json');
+var logger = require('graceful-logger');
+logger.format('medium');
 
 var v1Routes = require('./routes/v1.js');
 
@@ -24,11 +26,6 @@ var app = express();
 app.set('connection', connection);
 app.set('table', table);
 app.set('patchName', patchName);
-
-function tsLog(message) {
-  var time = new Date().toString();
-  console.log(time, message);
-}
 
 /*******************************************************************************
  * BEGIN ROUTING
@@ -56,7 +53,7 @@ app.get('/', function(req, res) {
     '</div>';
   res.send(welcomeMsg);
   res.end();
-  tsLog('SERVED - Homepage');
+  logger.info('SERVED - Homepage');
   return;
 });
 
@@ -79,7 +76,7 @@ function handleDisconnect(connection) {
       throw err;
     }
 
-    tsLog('Re-connecting to database.');
+    logger.info('Re-connecting to database.');
 
     connection = mysql.createConnection(connection.config);
     connection.connect();
@@ -101,7 +98,7 @@ function keepAlive() {
 app.set('port', config.port || 322);
 
 var server = app.listen(app.get('port'), function() {
-  tsLog('Herostats now running on port ' + server.address().port);
+  logger.info('Herostats now running on port ' + server.address().port);
 });
 
 module.exports = app;

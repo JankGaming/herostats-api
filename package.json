@@ -26,7 +26,8 @@
   "dependencies": {
     "express": "~4.9.0",
     "body-parser": "~1.8.1",
-    "mysql": "~2.5.2"
+    "mysql": "~2.5.2",
+    "graceful-logger": "^0.4.3"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
