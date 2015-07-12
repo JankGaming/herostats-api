@@ -1,15 +1,12 @@
-var connection;
-var table;
-var patchName;
+var connection = require('../lib/mysqlConnector');
+var config = require('../config.json');
+var table = config.mysqlTable;
 
 var patchList = require('../data/patches.json');
 var logger = require('graceful-logger');
 logger.format('medium');
 
 module.exports = function(app) {
-  connection = app.get('connection');
-  table = app.get('table');
-  patchName = app.get('patchName');
   app.get('/heroes/:hero', singleHero);
   app.get('/patch/:patchNumber', patchData);
   app.get('/heroes', heroList);
