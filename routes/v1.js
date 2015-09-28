@@ -72,6 +72,7 @@ var singleHero = function(req, res) {
 };
 
 var patchData = function(req, res) {
+  res.header('Access-Control-Allow-Origin', '*');
   var requestedPatch = req.params.patchNumber;
 
   if (patchList.indexOf(requestedPatch) === -1) {
